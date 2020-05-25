@@ -75,9 +75,7 @@ async function addUser(context: Record<string, any>) {
 function removeUser(context: Record<string, any>) {
   try {
     deleteUser(parseInt(context.params.id));
-    context.response.status = Status.OK;
-    context.response.body = `User ID ${context.params.id} removed`;
-    context.response.type = "json";
+    context.response.status = Status.NoContent;
     return;
   } catch (error) {
     console.log(error);
