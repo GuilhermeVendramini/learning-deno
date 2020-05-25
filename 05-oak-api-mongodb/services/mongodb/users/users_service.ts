@@ -3,7 +3,7 @@ import person from "../../../models/person_model.ts";
 
 const data = db.collection("users");
 
-async function findAllUsers(): Promise<person | null> {
+async function findAllUsers(): Promise<any> {
   return await data.find();
 }
 
@@ -11,7 +11,7 @@ async function insertUser(user: person): Promise<any> {
   return await data.insertOne(user);
 }
 
-async function findUser(id: number): Promise<person | null> {
+async function findUser(id: number): Promise<any> {
   return await data.find({ id: id });
 }
 
