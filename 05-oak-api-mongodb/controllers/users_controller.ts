@@ -14,12 +14,14 @@ async function getUsers(context: Record<string, any>) {
   context.response.body = JSON.stringify(
     await findAllUsers(),
   );
+  return;
 }
 
 async function getUser(context: Record<string, any>) {
   context.response.body = JSON.stringify(
     await findUser(parseInt(context.params.id)),
   );
+  return;
 }
 
 async function addUser(context: Record<string, any>) {
