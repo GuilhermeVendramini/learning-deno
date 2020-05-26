@@ -1,7 +1,7 @@
-type person = {
+type Person = {
   id: number;
   name: string;
   age: number;
 };
 
-export default person;
+export default Person;
