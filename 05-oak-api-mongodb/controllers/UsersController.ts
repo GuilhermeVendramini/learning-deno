@@ -8,16 +8,14 @@ import vs from "https://deno.land/x/value_schema/mod.ts";
 
 export default {
   async getUsers(context: Record<string, any>) {
-    context.response.body = JSON.stringify(
-      await UsersService.findAllUsers(),
-    );
+    context.response.body = await UsersService.findAllUsers();
+    context.response.type = "json";
     return;
   },
 
   async getUser(context: Record<string, any>) {
-    context.response.body = JSON.stringify(
-      await UsersService.findUser(parseInt(context.params.id)),
-    );
+    context.response.body = await UsersService.findUser(parseInt(context.params.id));
+    context.response.type = "json";
     return;
   },
 
@@ -43,8 +41,6 @@ export default {
         if (method == "PUT") {
           await UsersService.updateUser(user as Person);
         }
-
-        context.response.status = Status.OK;
         context.response.body = user;
         context.response.type = "json";
         return;
@@ -52,7 +48,10 @@ export default {
       context.throw(Status.BadRequest, "Bad Request");
     } catch (error) {
       console.log(error);
-      context.throw(Status.BadRequest, "Bad Request");
+      context.response.body = error.message;
+      context.response.status = Status.BadRequest;
+      context.response.type = "json";
+      return;
     }
   },
 
