@@ -3,6 +3,8 @@ import Person from "../models/PersonModel.ts";
 import {
   Status,
 } from "https://deno.land/x/oak/mod.ts";
+import personSchema from "../validators/schema/PersonSchema.ts";
+import vs from "https://deno.land/x/value_schema/mod.ts";
 
 export default {
   async getUsers(context: Record<string, any>) {
@@ -30,28 +32,15 @@ export default {
       let user: Partial<Person> | undefined;
 
       if (body.type === "json") {
-        user = body.value;
-        context.assert(
-          user?.age && typeof user.age === "number",
-          Status.BadRequest,
-        );
-        context.assert(
-          user?.name && typeof user.name === "string",
-          Status.BadRequest,
-        );
+        user = vs.applySchemaObject(personSchema, body.value);
       }
 
       if (user) {
         if (method == "POST") {
-          user.id = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
           await UsersService.insertUser(user as Person);
         }
 
         if (method == "PUT") {
-          context.assert(
-            user?.id != null && typeof user.id === "number",
-            Status.BadRequest,
-          );
           await UsersService.updateUser(user as Person);
         }
 
