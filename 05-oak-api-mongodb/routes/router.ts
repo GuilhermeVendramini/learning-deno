@@ -1,6 +1,6 @@
 import {
   Router,
-} from "https://deno.land/x/oak/mod.ts";
+} from "oak";
 
 const router = new Router();
 

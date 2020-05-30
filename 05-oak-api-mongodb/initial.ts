@@ -1,7 +1,7 @@
 import {
   Application,
-} from "https://deno.land/x/oak/mod.ts";
-import { config } from "https://deno.land/x/dotenv/mod.ts";
+} from "oak";
+import { config } from "dotenv";
 
 const env = config();
 const PORT: number = parseInt(env.PORT) || 8000;

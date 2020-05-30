@@ -1,5 +1,5 @@
 import { env } from "../../initial.ts";
-import { MongoClient } from "https://deno.land/x/mongo@v0.7.0/mod.ts";
+import { MongoClient } from "mongo";
 const client = new MongoClient();
 const DB = client.database("test");
 

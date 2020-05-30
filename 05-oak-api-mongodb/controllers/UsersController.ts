@@ -2,9 +2,9 @@ import UsersService from "../services/mongodb/users/UsersService.ts";
 import Person from "../models/PersonModel.ts";
 import {
   Status,
-} from "https://deno.land/x/oak/mod.ts";
+} from "oak";
 import personSchema from "../validators/schema/PersonSchema.ts";
-import vs from "https://deno.land/x/value_schema/mod.ts";
+import vs from "value_schema";
 
 export default {
   async getUsers(context: Record<string, any>) {

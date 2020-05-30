@@ -1,6 +1,6 @@
 import {
   Status,
-} from "https://deno.land/x/oak/mod.ts";
+} from "oak";
 
 export default (context: Record<string, any>) => {
   context.response.status = Status.NotFound;

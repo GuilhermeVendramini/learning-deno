@@ -1,4 +1,4 @@
-import vs from "https://deno.land/x/value_schema/mod.ts";
+import vs from "value_schema";
 
 const personSchema = {
   id: vs.number({
