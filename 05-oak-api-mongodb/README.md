@@ -9,5 +9,5 @@ denon run --importmap=package.json --allow-env --allow-read --allow-write --allo
 or
 
 ```shell
-denon start --al
+denon start
 ```
