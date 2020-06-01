@@ -13,13 +13,13 @@ export default {
   },
 
   async findUser(id: number): Promise<any> {
-    return await data.find({ id: id });
+    return await data.findOne({ id: id });
   },
 
   async updateUser(user: Person): Promise<any> {
     return await data.updateOne(
       { id: user.id },
-      { $set: { name: user.name, age: user.age } },
+      { $set: { name: user.name, password: user.password } },
     );
   },
 

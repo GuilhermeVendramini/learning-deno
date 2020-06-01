@@ -11,8 +11,8 @@ const personSchema = {
       trims: false,
     },
   }),
-  age: vs.number({
-    minValue: 0,
+  password: vs.string({
+    minLength: 8,
   }),
 };
 
