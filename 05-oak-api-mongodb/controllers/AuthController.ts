@@ -1,11 +1,12 @@
 import {
   Status,
 } from "oak";
-import hash from "../utils/hash/default_hash.ts";
+import hash from "../utils/hash/defaultHash.ts";
 import authSchema from "../validators/schema/authSchema.ts";
 import vs from "value_schema";
 import authService from "../services/mongodb/users/AuthService.ts";
 import Person from "../models/PersonModel.ts";
+import usertoken from "../utils/token/userToken.ts";
 
 export default {
   async login(context: Record<string, any>) {
@@ -25,20 +26,27 @@ export default {
         };
       }
 
+      let user: Person | undefined;
+
       if (value?.login && value?.password) {
-        let user: Person = await authService.loginUser(value.login) as Person;
+        user = await authService.loginUser(value.login) as Person;
         logged = await hash.verify(
           user.password,
           value.password,
         );
       }
 
-      if (logged) {
-        context.response.body = { message: "User successfully logged in." };
+      if (user && logged) {
+        let token: string = usertoken.generate(user.id);
+        context.response.body = {
+          message: "User successfully logged in.",
+          user: user,
+          token: token,
+        };
         context.response.type = "json";
         return;
       }
-      context.response.status = Status.BadRequest;
+      context.response.status = Status.UnprocessableEntity;
       context.response.body = { error: "Wrong login or email." };
       context.response.type = "json";
       return;

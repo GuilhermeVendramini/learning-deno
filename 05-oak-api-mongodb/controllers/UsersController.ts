@@ -5,25 +5,45 @@ import {
 } from "oak";
 import personSchema from "../validators/schema/personSchema.ts";
 import vs from "value_schema";
-import hash from "../utils/hash/default_hash.ts";
+import hash from "../utils/hash/defaultHash.ts";
+import authMiddleware from "../middleware/authMiddleware.ts";
 
 export default {
   async getUsers(context: Record<string, any>) {
+    let authorized = await authMiddleware.authorized(context);
+    if (!authorized) {
+      return;
+    }
+
     context.response.body = await UsersService.findAllUsers();
     context.response.type = "json";
+
     return;
   },
 
   async getUser(context: Record<string, any>) {
-    context.response.body = await UsersService.findUser(
+    let authorized = await authMiddleware.authorized(context);
+    if (!authorized) {
+      return;
+    }
+
+    let user = await UsersService.findUser(
       parseInt(context.params.id),
     );
+
+    context.response.body = user ? user : {};
     context.response.type = "json";
+
     return;
   },
 
   async addUser(context: Record<string, any>) {
     try {
+      let authorized = await authMiddleware.authorized(context);
+      if (!authorized) {
+        return;
+      }
+
       if (!context.request.hasBody) {
         context.throw(Status.BadRequest, "Bad Request");
       }
@@ -59,8 +79,13 @@ export default {
     }
   },
 
-  removeUser(context: Record<string, any>) {
+  async removeUser(context: Record<string, any>) {
     try {
+      let authorized = await authMiddleware.authorized(context);
+      if (!authorized) {
+        return;
+      }
+
       UsersService.deleteUser(parseInt(context.params.id));
       context.response.status = Status.NoContent;
       return;
