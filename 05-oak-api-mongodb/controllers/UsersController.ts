@@ -7,25 +7,21 @@ import personSchema from "../validators/schema/personSchema.ts";
 import vs from "value_schema";
 import hash from "../utils/hash/defaultHash.ts";
 import authMiddleware from "../middleware/authMiddleware.ts";
+import userToken from "../utils/token/userToken.ts";
 
 export default {
   async getUsers(context: Record<string, any>) {
     let authorized = await authMiddleware.authorized(context);
-    if (!authorized) {
-      return;
-    }
+    if (!authorized) return;
 
     context.response.body = await UsersService.findAllUsers();
     context.response.type = "json";
-
     return;
   },
 
   async getUser(context: Record<string, any>) {
     let authorized = await authMiddleware.authorized(context);
-    if (!authorized) {
-      return;
-    }
+    if (!authorized) return;
 
     let user = await UsersService.findUser(
       parseInt(context.params.id),
@@ -33,23 +29,20 @@ export default {
 
     context.response.body = user ? user : {};
     context.response.type = "json";
-
     return;
   },
 
   async addUser(context: Record<string, any>) {
     try {
-      let authorized = await authMiddleware.authorized(context);
-      if (!authorized) {
-        return;
-      }
+      const authorized = await authMiddleware.authorized(context);
+      if (!authorized) return;
 
       if (!context.request.hasBody) {
         context.throw(Status.BadRequest, "Bad Request");
       }
 
-      let method = context.request.method;
-      let body = await context.request.body();
+      const method = context.request.method;
+      const body = await context.request.body();
       let user: Partial<Person> | undefined;
 
       if (body.type === "json") {
@@ -81,10 +74,8 @@ export default {
 
   async removeUser(context: Record<string, any>) {
     try {
-      let authorized = await authMiddleware.authorized(context);
-      if (!authorized) {
-        return;
-      }
+      const authorized = await authMiddleware.authorized(context);
+      if (!authorized) return;
 
       UsersService.deleteUser(parseInt(context.params.id));
       context.response.status = Status.NoContent;
@@ -93,5 +84,24 @@ export default {
       console.log(error);
       context.throw(Status.BadRequest, "Bad Request");
     }
+  },
+
+  async getCurrentUser(context: Record<string, any>) {
+    const authorized = await authMiddleware.authorized(context);
+    if (!authorized) return;
+
+    const payload = userToken.fetchUserId(authorized);
+    let user = {};
+
+    if (payload) {
+      const uid: string = String(payload.uid);
+      user = await UsersService.findUser(
+        parseInt(uid),
+      );
+    }
+
+    context.response.body = user;
+    context.response.type = "json";
+    return;
   },
 };
